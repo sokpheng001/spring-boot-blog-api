@@ -3,7 +3,7 @@ git add .
 read -p "[+] Commit message: " msg
 git commit -m "$msg"
 
-echo -n "Current branch:"
+echo -n "Current branch: "
 git branch --show-current
 
 read -p "Are you sure to push? (y/n): " confirm
