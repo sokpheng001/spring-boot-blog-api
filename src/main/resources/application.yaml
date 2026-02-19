@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/blog_pi
+    username: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+  application:
+    name: blog-api
+  jpa:
+    hibernate:
+      # Use 'update' for dev, 'validate' or 'none' for production
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # Specifically tells Hibernate to use Postgres-style SQL
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+
+
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: myagger
