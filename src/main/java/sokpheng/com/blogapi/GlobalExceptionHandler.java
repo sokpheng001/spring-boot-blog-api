@@ -12,11 +12,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleInvalidEnum(HttpMessageNotReadableException ex) {
         // Check if the cause is an invalid Enum value
-        if (ex.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid Status! Please use only: DRAFT or PUBLISHED.");
-        }
-        return ResponseEntity.badRequest().body("Malformed JSON requestgoogle");
+//        if (ex.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException) {
+//            return ResponseEntity
+//                    .status(HttpStatus.BAD_REQUEST)
+//                    .body("Invalid Status! Please use only: DRAFT or PUBLISHED.");
+//        }
+        return ResponseEntity.badRequest().body("Invalid Status! Please use only: DRAFT or PUBLISHED.");
     }
 }

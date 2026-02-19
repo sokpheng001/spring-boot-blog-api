@@ -6,6 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 import sokpheng.com.blogapi.mapper.BlogMapper;
 import sokpheng.com.blogapi.model.dto.BlogResponseDto;
@@ -77,7 +80,7 @@ public class BlogService implements GlobalService<BlogResponseDto, CreateBlogDto
         if(updateBlogDto.status()!=null){
             // Check if the status is NOT in the allowed set
             if (!EnumSet.of(BlogStatus.DRAFT, BlogStatus.PUBLISHED).contains(updateBlogDto.status())) {
-                throw new RuntimeException("Status of Blog must be DRAFT or PUBLISHED");
+                throw new HttpMessageNotReadableException("Blog must be in DRAFT or PUBLISHED ", null );
             }
             blog.setStatus(updateBlogDto.status());
         }

@@ -36,13 +36,21 @@ public class BlogController {
                         "Created new blog",
                         blogService.create(o));
     }
+    @GetMapping("/{uuid}")
+    public ResponseTemplate<BlogResponseDto> getBlogUuid(
+            @PathVariable String uuid){
+        return new ResponseData<BlogResponseDto>()
+                .get(String.valueOf(HttpStatus.CREATED.value()),
+                        "Get blog by uuid",
+                        blogService.getByUuid(uuid));
+    }
     @PatchMapping("/{uuid}")
     public ResponseTemplate<BlogResponseDto> updateBlogByUuid(
             @PathVariable String uuid,
             @RequestBody UpdateBlogDto o){
         return new ResponseData<BlogResponseDto>()
-                .get(String.valueOf(HttpStatus.CREATED.value()),
-                        "Created new blog",
+                .get(String.valueOf(HttpStatus.OK.value()),
+                        "Updated new blog",
                         blogService.updateBlogByUuid(uuid,o));
     }
     @DeleteMapping("{uuid}")
