@@ -37,10 +37,14 @@ public class UserService implements GlobalService<UserResponseDto, CreateUserDto
 
     @Override
     public UserResponseDto getByUuid(String uuid) {
+        User user = userRepository.findUserByUuid(
+                uuid
+        );
+        if(user==null){
+            throw new SokphengNotFoundException("User is not Found");
+        }
         return userMapper.toResponseDto(
-                userRepository.findUserByUuid(
-                        uuid
-                )
+                user
         );
     }
 

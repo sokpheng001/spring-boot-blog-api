@@ -44,4 +44,11 @@ public class UserController {
                         "Updated a user",
                         userService.updateUserByUuid(uuid,o));
     }
+    @DeleteMapping("{uuid}")
+    public ResponseTemplate<Integer> deleteUserByUuid(@PathVariable String uuid ){
+        return new ResponseData<Integer>()
+                .get(String.valueOf(HttpStatus.OK.value()),
+                        "Deleted user",
+                        userService.deleteByUuid(uuid));
+    }
 }

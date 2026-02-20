@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import sokpheng.com.blogapi.exception.SokphengNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,5 +20,16 @@ public class GlobalExceptionHandler {
 //                    .body("Invalid Status! Please use only: DRAFT or PUBLISHED.");
 //        }
         return ResponseEntity.badRequest().body("Invalid Status! Please use only: DRAFT or PUBLISHED.");
+    }
+    @ExceptionHandler(SokphengNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleNtoFoundEntity(SokphengNotFoundException ex) {
+        // Check if the cause is an invalid Enum value
+//        if (ex.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException) {
+//            return ResponseEntity
+//                    .status(HttpStatus.BAD_REQUEST)
+//                    .body("Invalid Status! Please use only: DRAFT or PUBLISHED.");
+//        }
+        return ResponseEntity.notFound().build();
     }
 }
