@@ -10,6 +10,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
+import sokpheng.com.blogapi.exception.SokphengNotFoundException;
 import sokpheng.com.blogapi.mapper.BlogMapper;
 import sokpheng.com.blogapi.model.dto.BlogResponseDto;
 
@@ -74,7 +75,7 @@ public class BlogService implements GlobalService<BlogResponseDto, CreateBlogDto
     public BlogResponseDto updateBlogByUuid(String uuid, UpdateBlogDto updateBlogDto){
         Blog blog = blogRepository.findBlogByUuid(uuid);
         if (blog==(null)){
-            throw new RuntimeException("Blog is not found");
+            throw new SokphengNotFoundException("Blog is not found");
         }
         //
         if(updateBlogDto.status()!=null){

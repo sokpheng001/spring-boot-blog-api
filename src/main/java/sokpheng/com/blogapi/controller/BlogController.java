@@ -50,11 +50,11 @@ public class BlogController {
             @RequestBody UpdateBlogDto o){
         return new ResponseData<BlogResponseDto>()
                 .get(String.valueOf(HttpStatus.OK.value()),
-                        "Updated new blog",
+                        "Updated a blog",
                         blogService.updateBlogByUuid(uuid,o));
     }
     @DeleteMapping("{uuid}")
-    public ResponseTemplate<Integer> createNewBlog(@PathVariable String uuid ){
+    public ResponseTemplate<Integer> deleteBlogByUuid(@PathVariable String uuid ){
         return new ResponseData<Integer>()
                 .get(String.valueOf(HttpStatus.OK.value()),
                         "Deleted blog",

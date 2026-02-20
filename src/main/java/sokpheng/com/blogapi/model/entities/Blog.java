@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -31,7 +33,15 @@ public class Blog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
-
     private LocalDateTime createdAt = LocalDateTime.now();
+    //mappedBy must match the variable name in the Comment class
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    // Helper method to add comments
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setBlog(this);
+    }
 }
 

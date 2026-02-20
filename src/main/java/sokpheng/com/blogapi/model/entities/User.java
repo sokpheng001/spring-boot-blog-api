@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class User {
     private String coverUrl;
     private String fullName;
     private String bio;
+    private LocalDateTime createdAt;
 
 
     // Use OrphanRemoval to delete blogs if a user is deleted
