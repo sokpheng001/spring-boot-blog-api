@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sokpheng.com.blogapi.mapper.UserMapper;
 import sokpheng.com.blogapi.model.dto.CreateUserDto;
+import sokpheng.com.blogapi.model.dto.UserLoginDto;
 import sokpheng.com.blogapi.model.dto.UserResponseDto;
 import sokpheng.com.blogapi.model.entities.User;
 import sokpheng.com.blogapi.model.repo.UserRepository;
 import sokpheng.com.blogapi.security.PasswordEncoderConfig;
+import sokpheng.com.blogapi.utils.TokenTemplate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -30,5 +32,8 @@ public class AuthService {
         // save
         userRepository.save(user);
         return userMapper.toResponseDto(user);
+    }
+    public TokenTemplate loginUser(UserLoginDto userLoginDto){
+        return null;
     }
 }

@@ -2,15 +2,14 @@ package sokpheng.com.blogapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sokpheng.com.blogapi.model.dto.CreateUserDto;
+import sokpheng.com.blogapi.model.dto.UserLoginDto;
 import sokpheng.com.blogapi.model.dto.UserResponseDto;
 import sokpheng.com.blogapi.model.service.AuthService;
 import sokpheng.com.blogapi.model.service.UserService;
 import sokpheng.com.blogapi.utils.ResponseTemplate;
+import sokpheng.com.blogapi.utils.TokenTemplate;
 
 @RestController
 @RequestMapping("/api/v100/auth")
@@ -25,5 +24,13 @@ public class AuthController {
                 .get(String.valueOf(HttpStatus.CREATED.value()),
                         "User registered successfully",
                         authService.registerUser(createUserDto));
+    }
+    @GetMapping("/login")
+    public ResponseTemplate<TokenTemplate> login(@RequestBody
+                                                 UserLoginDto loginDto){
+        return new ResponseData<TokenTemplate>()
+                .get(String.valueOf(HttpStatus.OK.value()),
+                        "User login successfully",
+                        authService.loginUser(loginDto));
     }
 }
