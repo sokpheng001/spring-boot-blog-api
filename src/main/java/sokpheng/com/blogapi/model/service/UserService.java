@@ -65,6 +65,25 @@ public class UserService implements GlobalService<UserResponseDto, CreateUserDto
     }
     public UserResponseDto updateUserByUuid(String uuid,
                                             UpdateUserDto updateUserDto){
-        return null;
+        getByUuid(uuid);
+        User user  = userRepository.findUserByUuid(uuid);
+        if(updateUserDto.fullName()!=null){
+            user.setFullName(updateUserDto.fullName());
+        }
+        if(updateUserDto.bio()!=null){
+            user.setBio(updateUserDto.bio());
+        }
+        if(updateUserDto.email()!=null){
+            user.setEmail(updateUserDto.email());
+        }
+        if(updateUserDto.coverUrl()!=null){
+            user.setCoverUrl(updateUserDto.coverUrl());
+        }
+        if(updateUserDto.profileUrl()!=null){
+            user.setProfileUrl(updateUserDto.profileUrl());
+        }
+        // update
+        userRepository.save(user);
+        return userMapper.toResponseDto(user);
     }
 }
