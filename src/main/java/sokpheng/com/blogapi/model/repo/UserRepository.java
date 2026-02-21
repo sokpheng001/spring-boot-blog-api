@@ -10,4 +10,5 @@ import sokpheng.com.blogapi.model.entities.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAll(Pageable pageable);
     User findUserByUuid(String uuid);
+    User findUserByEmail(String email);
 }

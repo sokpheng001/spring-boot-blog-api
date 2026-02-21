@@ -2,8 +2,10 @@ package sokpheng.com.blogapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sokpheng.com.blogapi.model.dto.CreateUserDto;
+import sokpheng.com.blogapi.model.dto.RefreshTokenRequestDto;
 import sokpheng.com.blogapi.model.dto.UserLoginDto;
 import sokpheng.com.blogapi.model.dto.UserResponseDto;
 import sokpheng.com.blogapi.model.service.AuthService;
@@ -25,12 +27,19 @@ public class AuthController {
                         "User registered successfully",
                         authService.registerUser(createUserDto));
     }
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseTemplate<TokenTemplate> login(@RequestBody
                                                  UserLoginDto loginDto){
         return new ResponseData<TokenTemplate>()
                 .get(String.valueOf(HttpStatus.OK.value()),
                         "User login successfully",
                         authService.loginUser(loginDto));
+    }
+    @PostMapping("/refresh")
+    public ResponseTemplate<TokenTemplate> getNewToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+        return new ResponseData<TokenTemplate>()
+                .get(String.valueOf(HttpStatus.OK.value()),
+                        "Get new token successfully",
+                        authService.getNewToken(refreshTokenRequestDto));
     }
 }

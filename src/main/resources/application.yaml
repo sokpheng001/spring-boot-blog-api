@@ -10,17 +10,22 @@ spring:
     hibernate:
       # Use 'update' for dev, 'validate' or 'none' for production
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
         # Specifically tells Hibernate to use Postgres-style SQL
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: true
-
-
-
+    generate-ddl: false
 springdoc:
   swagger-ui:
     enabled: true
     path: myagger
+
+jwt:
+  private-key: classpath:keys/private_key_pkcs8.pem
+  public-key: classpath:keys/public_key.pem
+  access-token:
+    expire: 3600000 # 3600000s =  1 hour
+  refresh-token:
+    expire: 2592000000 # 2592000000s =  30 days

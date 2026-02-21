@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Builder
 public record TokenTemplate(
         String accessToken,
-        LocalDateTime accessTokenExpireDate,
+        Long accessTokenExpireInSecond,
         String refreshToken,
-        LocalDateTime refreshTokenExpireDate
+        Long refreshTokenExpireInSecond
 ) { }
