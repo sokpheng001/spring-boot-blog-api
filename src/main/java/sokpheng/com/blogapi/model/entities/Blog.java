@@ -26,6 +26,7 @@ public class Blog {
     private String thumbnailUrl;
     @Column(columnDefinition = "TEXT")
     private String content;
+    private Long view;
 
     @Enumerated(EnumType.STRING)
     private BlogStatus status = BlogStatus.DRAFT;
@@ -33,6 +34,7 @@ public class Blog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
+    private String authorUuid;
     private LocalDateTime createdAt = LocalDateTime.now();
     //mappedBy must match the variable name in the Comment class
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)

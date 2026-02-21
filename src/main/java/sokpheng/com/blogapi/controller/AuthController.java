@@ -1,8 +1,9 @@
 package sokpheng.com.blogapi.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sokpheng.com.blogapi.model.dto.CreateUserDto;
 import sokpheng.com.blogapi.model.dto.RefreshTokenRequestDto;
@@ -11,7 +12,7 @@ import sokpheng.com.blogapi.model.dto.UserResponseDto;
 import sokpheng.com.blogapi.model.service.AuthService;
 import sokpheng.com.blogapi.model.service.UserService;
 import sokpheng.com.blogapi.utils.ResponseTemplate;
-import sokpheng.com.blogapi.utils.TokenTemplate;
+import sokpheng.com.blogapi.model.dto.TokenTemplate;
 
 @RestController
 @RequestMapping("/api/v100/auth")
@@ -20,8 +21,7 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
     @PostMapping("/register")
-    public ResponseTemplate<UserResponseDto> registerUser(@RequestBody
-                                                 CreateUserDto createUserDto){
+    public ResponseTemplate<UserResponseDto> registerUser(@RequestBody @Valid CreateUserDto createUserDto){
         return new ResponseData<UserResponseDto>()
                 .get(String.valueOf(HttpStatus.CREATED.value()),
                         "User registered successfully",
@@ -41,5 +41,12 @@ public class AuthController {
                 .get(String.valueOf(HttpStatus.OK.value()),
                         "Get new token successfully",
                         authService.getNewToken(refreshTokenRequestDto));
+    }
+    @PostMapping("/me")
+    public ResponseTemplate<UserResponseDto> getUserIUnfo(Authentication authentication) {
+        return new ResponseData<UserResponseDto>()
+                .get(String.valueOf(HttpStatus.OK.value()),
+                        "Get user information successfully",
+                        authService.getUserInfo(authentication));
     }
 }

@@ -36,6 +36,8 @@ public class User implements UserDetails {
     // Use OrphanRemoval to delete blogs if a user is deleted
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Blog> blogs = new ArrayList<>();//
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
     //  roles set for users
     @ManyToMany(targetEntity = Role.class)
     private Set<Role> roles;

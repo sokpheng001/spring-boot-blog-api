@@ -2,8 +2,10 @@ package sokpheng.com.blogapi.model.dto;
 
 import lombok.Builder;
 import sokpheng.com.blogapi.model.entities.BlogStatus;
+import sokpheng.com.blogapi.model.entities.Comment;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 public record BlogResponseDto(
@@ -12,6 +14,8 @@ public record BlogResponseDto(
         String authorUuid,
         String thumbnailUrl,
         String content,
+        Long view,
         BlogStatus status,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        List<CommentResponseDto> comments
 ) { }

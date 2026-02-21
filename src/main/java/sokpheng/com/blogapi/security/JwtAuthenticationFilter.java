@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try{
 
             String accessToken = request.getHeader("Authorization");
-            logger.info("Token: " + accessToken);
+//            logger.info("Token: " + request);
             if(accessToken != null && accessToken.startsWith("Bearer ")) {
                 accessToken = accessToken.substring(6);
                 // verify token between the private encrypted key and public key
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .sign(UUID.randomUUID().toString())
                             .status(HttpStatus.UNAUTHORIZED.toString())
                             .message(e.getMessage())
-                            .date(LocalDate.now())
+                            .date(Date.from(Instant.now()))
                             .build()
             );
             response.getWriter().write(json);

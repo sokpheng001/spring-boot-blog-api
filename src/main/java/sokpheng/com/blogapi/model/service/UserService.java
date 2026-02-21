@@ -12,21 +12,29 @@ import sokpheng.com.blogapi.model.dto.CreateUserDto;
 import sokpheng.com.blogapi.model.dto.UpdateUserDto;
 import sokpheng.com.blogapi.model.dto.UserResponseDto;
 
+import sokpheng.com.blogapi.model.entities.Role;
 import sokpheng.com.blogapi.model.entities.User;
+import sokpheng.com.blogapi.model.repo.RoleRepository;
 import sokpheng.com.blogapi.model.repo.UserRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements GlobalService<UserResponseDto, CreateUserDto> {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final RoleRepository roleRepository;
     @Override
     public Page<UserResponseDto> getAllDataByPagination(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(
                 "createdAt").ascending());
-        Page<User> blogPage = userRepository.findAll(pageable);
+        Role role = roleRepository.findRoleByName("USER");
+        if (role==null){
+            throw new SokphengNotFoundException("Check for role for getting all users");
+        }
+        Page<User> blogPage = userRepository.findAllByRoles_Name("USER",pageable);
         return blogPage.map(userMapper::toResponseDto);
     }
 

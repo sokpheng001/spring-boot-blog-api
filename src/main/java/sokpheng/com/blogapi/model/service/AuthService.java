@@ -1,12 +1,15 @@
 package sokpheng.com.blogapi.model.service;
 
+import com.fasterxml.jackson.annotation.JsonKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import sokpheng.com.blogapi.exception.ExistingException;
 import sokpheng.com.blogapi.exception.SokphengNotFoundException;
 import sokpheng.com.blogapi.mapper.UserMapper;
 import sokpheng.com.blogapi.model.dto.CreateUserDto;
@@ -19,13 +22,14 @@ import sokpheng.com.blogapi.model.repo.RoleRepository;
 import sokpheng.com.blogapi.model.repo.UserRepository;
 import sokpheng.com.blogapi.security.JWTUtils;
 import sokpheng.com.blogapi.security.PasswordEncoderConfig;
-import sokpheng.com.blogapi.utils.TokenTemplate;
+import sokpheng.com.blogapi.model.dto.TokenTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -41,6 +45,10 @@ public class AuthService {
     private long refreshTokenExpiration;
 
     public UserResponseDto registerUser(CreateUserDto createUserDto){
+        User existingUser = userRepository.findUserByEmail(createUserDto.email());
+        if(existingUser!=null){
+            throw new ExistingException("User with this email is existed");
+        }
         User user = new User();
         user.setUuid(UUID.randomUUID().toString());
         user.setFullName(createUserDto.fullName());
@@ -61,6 +69,9 @@ public class AuthService {
     }
     public TokenTemplate loginUser(UserLoginDto userLoginDto){
         User user1  = userRepository.findUserByEmail(userLoginDto.email());
+        if(user1==null){
+            throw new SokphengNotFoundException("Email OR Password is wrong");
+        }
         // verify password
         if(Objects.equals(passwordEncoderConfig.passwordEncoder()
                 .encode(userLoginDto.password()), user1.getPassword())){
@@ -69,13 +80,14 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user1.getUuid(), userLoginDto.password())
         );
+
         String accessToken = jwtUtil.generateAccessToken(user1.getUuid(), authentication.getAuthorities());
         String refreshToken = jwtUtil.generateRefreshToken(user1.getUuid());
         return TokenTemplate.builder()
                 .accessToken(accessToken)
-                .accessTokenExpireInSecond(accessTokenExpiration)
+                .accessTokenExpireInMilliSecond(accessTokenExpiration)
                 .refreshToken(refreshToken)
-                .refreshTokenExpireInSecond(refreshTokenExpiration)
+                .refreshTokenExpireInMilliSecond(refreshTokenExpiration)
                 .build();
     }
     public TokenTemplate getNewToken(RefreshTokenRequestDto refreshTokenRequestDto){
@@ -85,13 +97,23 @@ public class AuthService {
         }
         boolean isTokenValid = jwtUtil.isTokenValid(refreshTokenRequestDto.refreshToken());// verify is valid token, it will throw an exception is not valid :)
         User user = userRepository.findUserByUuid(jwtUtil.extractSubject(refreshTokenRequestDto.refreshToken()));
+        if(user==null){
+            throw new SokphengNotFoundException("Invalid Refresh token");
+        }
         String accessToken = jwtUtil.generateAccessToken(user.getUuid(), user.getAuthorities());
         String newRefreshToken = jwtUtil.generateRefreshToken(user.getUuid());
         return TokenTemplate.builder()
                 .accessToken(accessToken)
-                .accessTokenExpireInSecond(accessTokenExpiration)
+                .accessTokenExpireInMilliSecond(accessTokenExpiration)
                 .refreshToken(newRefreshToken)
-                .refreshTokenExpireInSecond(refreshTokenExpiration)
+                .refreshTokenExpireInMilliSecond(refreshTokenExpiration)
                 .build();
+    }
+    public UserResponseDto getUserInfo(Authentication authentication){
+        User user = userRepository.findUserByUuid(authentication.getPrincipal().toString());
+        if(user==null){
+            throw new SokphengNotFoundException("User is not found");
+        }
+        return userMapper.toResponseDto(user);
     }
 }

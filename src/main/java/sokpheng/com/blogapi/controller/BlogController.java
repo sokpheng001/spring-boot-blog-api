@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sokpheng.com.blogapi.model.dto.BlogResponseDto;
 import sokpheng.com.blogapi.model.dto.CreateBlogDto;
@@ -30,11 +31,12 @@ public class BlogController {
                         blogService.getAllDataByPagination(pageNumber,pageSize));
     }
     @PostMapping()
-    public ResponseTemplate<BlogResponseDto> createNewBlog(@RequestBody CreateBlogDto o){
+    public ResponseTemplate<BlogResponseDto> createNewBlog(Authentication authentication,
+                                                           @RequestBody CreateBlogDto o){
         return new ResponseData<BlogResponseDto>()
                 .get(String.valueOf(HttpStatus.CREATED.value()),
                         "Created new blog",
-                        blogService.create(o));
+                        blogService.create(authentication,o));
     }
     @GetMapping("/{uuid}")
     public ResponseTemplate<BlogResponseDto> getBlogUuid(
@@ -43,6 +45,15 @@ public class BlogController {
                 .get(String.valueOf(HttpStatus.CREATED.value()),
                         "Get blog by uuid",
                         blogService.getByUuid(uuid));
+    }
+    @GetMapping("/user/{userUuid}")
+    public ResponseTemplate<Page<BlogResponseDto>> getBlogByUserUuid(
+            @PathVariable String userUuid, @RequestParam int pageNumber,
+            @RequestParam int pageSize){
+        return new ResponseData<Page<BlogResponseDto>>()
+                .get(String.valueOf(HttpStatus.CREATED.value()),
+                        "Get blog by user uuid",
+                        blogService.getBlogByUserUuid(userUuid,pageNumber, pageSize));
     }
     @PatchMapping("/{uuid}")
     public ResponseTemplate<BlogResponseDto> updateBlogByUuid(

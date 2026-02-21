@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,6 +27,7 @@ public class SecurityConfig {
     private final CustomizeUserRole customizeUserRole;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final PasswordEncoderConfig passwordEncoderConfig;
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -51,6 +53,21 @@ public class SecurityConfig {
                 .hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/v100/users/**")
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                // blogs
+                .requestMatchers(HttpMethod.POST,"/api/v100/blogs")
+                .hasAnyAuthority("ROLE_ADMIN","ROLE_USER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v100/blogs/**")
+                .hasAnyAuthority("ROLE_ADMIN","ROLE_USER")
+                .requestMatchers(HttpMethod.PATCH, "/api/v100/blogs/**")
+                .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                // comment
+                .requestMatchers(HttpMethod.POST, "/api/v100/comments/**")
+                .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v100/blogs/**")
+                .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .requestMatchers(HttpMethod.PATCH, "/api/v100/comments/**")
+                .authenticated()
+                // auth
                 .requestMatchers("/api/v100/auth/**")
                 .permitAll()
                 .anyRequest()
@@ -59,7 +76,10 @@ public class SecurityConfig {
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        httpSecurity.sessionManagement(session
+                ->session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
     @Bean

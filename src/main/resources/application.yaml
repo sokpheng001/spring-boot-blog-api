@@ -21,6 +21,11 @@ springdoc:
   swagger-ui:
     enabled: true
     path: myagger
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
 
 jwt:
   private-key: classpath:keys/private_key_pkcs8.pem
