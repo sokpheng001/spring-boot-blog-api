@@ -67,9 +67,14 @@ public class SecurityConfig {
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .requestMatchers(HttpMethod.PATCH, "/api/v100/comments/**")
                 .authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/v100/comments/**")
+                .hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 // auth
                 .requestMatchers("/api/v100/auth/**")
                 .permitAll()
+                // media
+                .requestMatchers(HttpMethod.POST,"/api/v100/medias/**")
+                .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .anyRequest()
                 .permitAll()
         );

@@ -1,6 +1,10 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
   datasource:
-    url: jdbc:postgresql://localhost:5433/blog_pi
+    url: jdbc:postgresql://db:5432/blog_pi
     username: postgres
     password: 123
     driver-class-name: org.postgresql.Driver
@@ -8,25 +12,17 @@ spring:
     name: blog-api
   jpa:
     hibernate:
-      # Use 'update' for dev, 'validate' or 'none' for production
       ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-        # Specifically tells Hibernate to use Postgres-style SQL
         dialect: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: false
 springdoc:
   swagger-ui:
     enabled: true
     path: myagger
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        security: DEBUG
-
 jwt:
   private-key: classpath:keys/private_key_pkcs8.pem
   public-key: classpath:keys/public_key.pem
@@ -34,3 +30,9 @@ jwt:
     expire: 3600000 # 3600000s =  1 hour
   refresh-token:
     expire: 2592000000 # 2592000000s =  30 days
+# media
+file:
+  target: uploads/
+  media-url: /api/v100/files
+url:
+  base-url: http://blog-api.bykh.org

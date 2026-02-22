@@ -49,4 +49,11 @@ public class AuthController {
                         "Get user information successfully",
                         authService.getUserInfo(authentication));
     }
+    @PostMapping("/admin")
+    public ResponseTemplate<UserResponseDto> registerAdmin(@RequestBody @Valid CreateUserDto createUserDto){
+        return new ResponseData<UserResponseDto>()
+                .get(String.valueOf(HttpStatus.CREATED.value()),
+                        "Admin registered successfully",
+                        authService.registerAdmin(createUserDto));
+    }
 }

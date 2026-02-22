@@ -43,8 +43,7 @@ public class AuthService {
     private long accessTokenExpiration;
     @Value("${jwt.refresh-token.expire}")
     private long refreshTokenExpiration;
-
-    public UserResponseDto registerUser(CreateUserDto createUserDto){
+    private UserResponseDto register(String rName,CreateUserDto createUserDto){
         User existingUser = userRepository.findUserByEmail(createUserDto.email());
         if(existingUser!=null){
             throw new ExistingException("User with this email is existed");
@@ -54,7 +53,7 @@ public class AuthService {
         user.setFullName(createUserDto.fullName());
         user.setEmail(createUserDto.email());
         // set role
-        Role role = roleRepository.findRoleByName("USER");
+        Role role = roleRepository.findRoleByName(rName.toUpperCase());
         if(role==null){
             throw new SokphengNotFoundException("Role is not found for user");
         }
@@ -66,6 +65,12 @@ public class AuthService {
         // save
         userRepository.save(user);
         return userMapper.toResponseDto(user);
+    }
+    public UserResponseDto registerUser(CreateUserDto createUserDto){
+       return register("user",createUserDto);
+    }
+    public UserResponseDto registerAdmin(CreateUserDto createUserDto){
+        return register("admin",createUserDto);
     }
     public TokenTemplate loginUser(UserLoginDto userLoginDto){
         User user1  = userRepository.findUserByEmail(userLoginDto.email());
