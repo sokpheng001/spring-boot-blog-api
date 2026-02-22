@@ -32,7 +32,7 @@ jwt:
     expire: 2592000000 # 2592000000s =  30 days
 # media
 file:
-  target: uploads/
+  target: app/uploads/
   media-url: /api/v100/files
 url:
   base-url: http://blog-api.bykh.org

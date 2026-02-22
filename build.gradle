@@ -5,8 +5,8 @@ plugins {
 }
 
 group = 'sokpheng.com'
-version = '0.0.1-SNAPSHOT'
-description = 'blog-api'
+//version = '0.0.1-SNAPSHOT'
+//description = 'app'
 
 java {
     toolchain {
