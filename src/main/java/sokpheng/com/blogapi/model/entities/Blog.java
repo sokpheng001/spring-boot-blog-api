@@ -36,6 +36,7 @@ public class Blog {
     private User author;
     private String authorUuid;
     private LocalDateTime createdAt = LocalDateTime.now();
+    private String blogCategory;
     //mappedBy must match the variable name in the Comment class
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();

@@ -13,6 +13,7 @@ public record BlogResponseDto(
         String title,
         String authorUuid,
         String thumbnailUrl,
+        String blogCategory,
         String content,
         Long view,
         BlogStatus status,

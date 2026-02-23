@@ -9,5 +9,6 @@ public record CreateBlogDto(
         String title,
         String thumbnail,
         BlogStatus status,
+        String blogCategory,
         String content
 ) { }

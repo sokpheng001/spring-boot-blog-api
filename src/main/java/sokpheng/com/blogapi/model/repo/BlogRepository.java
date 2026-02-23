@@ -12,4 +12,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     Page<Blog> findByStatus(BlogStatus blogStatus, Pageable pageable);
     Blog findBlogByUuid(String uuid);
     Page<Blog> findBlogByAuthorId(Long id, Pageable pageable);
+    Page<Blog> findBlogByBlogCategory(String blogCategory, Pageable pageable);
+    Page<Blog> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }

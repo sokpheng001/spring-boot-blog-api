@@ -25,10 +25,7 @@ import sokpheng.com.blogapi.model.repo.BlogRepository;
 import sokpheng.com.blogapi.model.repo.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -51,6 +48,19 @@ public class BlogService implements GlobalService<BlogResponseDto, CreateBlogDto
         return blogRepository.findAll().stream().map(
                 blogMapper::toBlogResponse
         ).toList();
+    }
+
+    public Page<BlogResponseDto> findBlogByCategory(String category, int pageNumber, int pageSize){
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(
+                "createdAt").ascending());
+        Page<Blog> blogPage = blogRepository.findBlogByBlogCategory(category, pageable);
+        return blogPage.map(blogMapper::toBlogResponse);
+    }
+    public Page<BlogResponseDto> findBlogByTitle(String title, int pageNumber, int pageSize){
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(
+                "createdAt").ascending());
+        Page<Blog> blogPage = blogRepository.findByTitleContainingIgnoreCase(title, pageable);
+        return blogPage.map(blogMapper::toBlogResponse);
     }
     public Page<BlogResponseDto> getBlogByUserUuid(String userUuid,int pageNumber, int pageSize){
         Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(
@@ -112,6 +122,7 @@ public class BlogService implements GlobalService<BlogResponseDto, CreateBlogDto
         blog.setCreatedAt(LocalDateTime.now());
         blog.setStatus(o.status());
         blog.setView(0L);
+        blog.setBlogCategory(o.blogCategory().toUpperCase(Locale.ROOT));
         // save to database
         blogRepository.save(blog);
         return blogMapper.toBlogResponse(blog);

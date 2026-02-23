@@ -92,6 +92,7 @@ public class JWTUtils {
     }
     // valid token by using key-pairs
     public Boolean isTokenValid(String token) {
+
         try{
             Jwts.parserBuilder()
                     .setSigningKey(keyUtil.getPublicKey())
