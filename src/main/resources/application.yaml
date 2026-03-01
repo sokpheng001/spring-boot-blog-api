@@ -1,11 +1,24 @@
+
 spring:
+  # email configure
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: piu9066@gmail.com
+    password: bstu ezho yugx gmad
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
   datasource:
     url: jdbc:postgresql://db:5432/blog_pi
-#    url: jdbc:postgresql://localhost:5433/blog_pi
+#    url: jdbc:postgresql://localhost:5432/blog_pi
     username: postgres
     password: 123
     driver-class-name: org.postgresql.Driver
@@ -31,9 +44,16 @@ jwt:
     expire: 3600000 # 3600000s =  1 hour
   refresh-token:
     expire: 2592000000 # 2592000000s =  30 days
+
 # media
 file:
   target: app/uploads/
   media-url: /api/v100/files
 url:
   base-url: http://blog-api.bykh.org
+#  base-url: http://localhost:8080
+logging:
+  level:
+    org:
+      springframework:
+        mail: DEBUG

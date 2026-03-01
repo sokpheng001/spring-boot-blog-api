@@ -31,6 +31,7 @@ public class User implements UserDetails {
     private String fullName;
     private String bio;
     private LocalDateTime createdAt;
+    private Boolean isVerified;
 
 
     // Use OrphanRemoval to delete blogs if a user is deleted

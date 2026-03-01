@@ -1,6 +1,5 @@
 package sokpheng.com.blogapi.model.service;
 
-import com.fasterxml.jackson.annotation.JsonKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +17,10 @@ import sokpheng.com.blogapi.model.dto.UserLoginDto;
 import sokpheng.com.blogapi.model.dto.UserResponseDto;
 import sokpheng.com.blogapi.model.entities.Role;
 import sokpheng.com.blogapi.model.entities.User;
+import sokpheng.com.blogapi.model.entities.VerificationToken;
 import sokpheng.com.blogapi.model.repo.RoleRepository;
 import sokpheng.com.blogapi.model.repo.UserRepository;
+import sokpheng.com.blogapi.model.repo.VerificationTokenRepository;
 import sokpheng.com.blogapi.security.JWTUtils;
 import sokpheng.com.blogapi.security.PasswordEncoderConfig;
 import sokpheng.com.blogapi.model.dto.TokenTemplate;
@@ -39,10 +40,26 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
     private final JWTUtils jwtUtil;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final EmailService emailService;
     @Value("${jwt.access-token.expire}")
     private long accessTokenExpiration;
     @Value("${jwt.refresh-token.expire}")
     private long refreshTokenExpiration;
+    public void verifyEmail(String token){
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+
+        if (verificationToken == null) {
+            throw new SokphengNotFoundException("Invalid token");
+        }
+
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new SokphengNotFoundException("Token expired");
+        }
+        User user = verificationToken.getUser();
+        user.setIsVerified(true);
+        userRepository.save(user);
+    }
     private UserResponseDto register(String rName,CreateUserDto createUserDto){
         User existingUser = userRepository.findUserByEmail(createUserDto.email());
         if(existingUser!=null){
@@ -50,6 +67,7 @@ public class AuthService {
         }
         User user = new User();
         user.setUuid(UUID.randomUUID().toString());
+        user.setIsVerified(false);
         user.setFullName(createUserDto.fullName());
         user.setEmail(createUserDto.email());
         // set role
@@ -64,6 +82,15 @@ public class AuthService {
         user.setCreatedAt(LocalDateTime.now());
         // save
         userRepository.save(user);
+        // generate the token for verify
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setUser(user);
+        // 15 MINUTEs for email verifying expire
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(15));
+        String token = UUID.randomUUID().toString();
+        verificationToken.setToken(token);
+        verificationTokenRepository.save(verificationToken);
+        emailService.sendVerificationEmail(user.getEmail(),token);
         return userMapper.toResponseDto(user);
     }
     public UserResponseDto registerUser(CreateUserDto createUserDto){
@@ -76,6 +103,10 @@ public class AuthService {
         User user1  = userRepository.findUserByEmail(userLoginDto.email());
         if(user1==null){
             throw new SokphengNotFoundException("Email OR Password is wrong");
+        }
+        // check if verified
+        if(user1.getIsVerified().equals(false)){
+            throw new SokphengNotFoundException("Email to verify before login");
         }
         // verify password
         if(Objects.equals(passwordEncoderConfig.passwordEncoder()
